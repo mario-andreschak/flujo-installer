@@ -2,9 +2,12 @@
 #AutoIt3Wrapper_Icon=..\FLUJO\public\favicon.ico
 #AutoIt3Wrapper_Compile_Both=y
 #AutoIt3Wrapper_Res_Description=FLUJO Launcher/Installer
-#AutoIt3Wrapper_Res_Fileversion=1.0.0.1
+#AutoIt3Wrapper_Res_Fileversion=1.0.0.2
 #AutoIt3Wrapper_Res_Fileversion_AutoIncrement=y
+#AutoIt3Wrapper_Res_ProductName=FLUJO Launcher
 #AutoIt3Wrapper_Res_CompanyName=FLUJO.org
+#AutoIt3Wrapper_Res_LegalCopyright=FLUJO.org
+#AutoIt3Wrapper_Res_LegalTradeMarks=FLUJO.org
 #AutoIt3Wrapper_Res_SaveSource=y
 #AutoIt3Wrapper_Run_Tidy=y
 #AutoIt3Wrapper_Run_Au3Stripper=y
@@ -335,24 +338,24 @@ Func IsGitInstalled()
 		Return True
 	EndIf
 
-	; Check PATH
-	Local $sResult = RunWait(@ComSpec & " /c git --version", "", @SW_HIDE, $STDOUT_CHILD)
+	; Check PATH using PowerShell
+	Local $sResult = RunWait("powershell.exe -Command ""git --version""", "", @SW_HIDE, $STDOUT_CHILD)
 	Return $sResult = 0
 EndFunc   ;==>IsGitInstalled
 
 Func IsNodeInstalled()
-	Local $sResult = RunWait(@ComSpec & " /c node --version", "", @SW_HIDE, $STDOUT_CHILD)
+	Local $sResult = RunWait("powershell.exe -Command ""node --version""", "", @SW_HIDE, $STDOUT_CHILD)
 	Return $sResult = 0
 EndFunc   ;==>IsNodeInstalled
 
 Func IsPythonInstalled()
-	Local $sResult = RunWait(@ComSpec & " /c python --version", "", @SW_HIDE, $STDOUT_CHILD)
+	Local $sResult = RunWait("powershell.exe -Command ""python --version""", "", @SW_HIDE, $STDOUT_CHILD)
 	Return $sResult = 0
 EndFunc   ;==>IsPythonInstalled
 
 Func GetGitVersion()
 	Local $sOutput = ""
-	Local $iPID = Run(@ComSpec & " /c git --version", "", @SW_HIDE, $STDOUT_CHILD)
+	Local $iPID = Run("powershell.exe -Command ""git --version""", "", @SW_HIDE, $STDOUT_CHILD)
 	While ProcessExists($iPID)
 		$sOutput &= StdoutRead($iPID)
 		Sleep(10)
@@ -362,7 +365,7 @@ EndFunc   ;==>GetGitVersion
 
 Func GetNodeVersion()
 	Local $sOutput = ""
-	Local $iPID = Run(@ComSpec & " /c node --version", "", @SW_HIDE, $STDOUT_CHILD)
+	Local $iPID = Run("powershell.exe -Command ""node --version""", "", @SW_HIDE, $STDOUT_CHILD)
 	While ProcessExists($iPID)
 		$sOutput &= StdoutRead($iPID)
 		Sleep(10)
@@ -372,7 +375,7 @@ EndFunc   ;==>GetNodeVersion
 
 Func GetPythonVersion()
 	Local $sOutput = ""
-	Local $iPID = Run(@ComSpec & " /c python --version", "", @SW_HIDE, $STDOUT_CHILD)
+	Local $iPID = Run("powershell.exe -Command ""python --version""", "", @SW_HIDE, $STDOUT_CHILD)
 	While ProcessExists($iPID)
 		$sOutput &= StdoutRead($iPID)
 		Sleep(10)
