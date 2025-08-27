@@ -1,5 +1,14 @@
 #Region ;**** Directives created by AutoIt3Wrapper_GUI ****
 #AutoIt3Wrapper_Icon=..\FLUJO\public\favicon.ico
+#AutoIt3Wrapper_Compile_Both=y
+#AutoIt3Wrapper_Res_Description=FLUJO Launcher/Installer
+#AutoIt3Wrapper_Res_Fileversion=1.0.0.1
+#AutoIt3Wrapper_Res_Fileversion_AutoIncrement=y
+#AutoIt3Wrapper_Res_CompanyName=FLUJO.org
+#AutoIt3Wrapper_Res_SaveSource=y
+#AutoIt3Wrapper_Run_Tidy=y
+#AutoIt3Wrapper_Run_Au3Stripper=y
+#Au3Stripper_Parameters=/sf /sv
 #EndRegion ;**** Directives created by AutoIt3Wrapper_GUI ****
 ; *** Start added by AutoIt3Wrapper ***
 #include <AutoItConstants.au3>
@@ -327,17 +336,17 @@ Func IsGitInstalled()
 	EndIf
 
 	; Check PATH
-	Local $sResult = RunWait(@ComSpec & " /c git --version", "", @SW_HIDE)
+	Local $sResult = RunWait(@ComSpec & " /c git --version", "", @SW_HIDE, $STDOUT_CHILD)
 	Return $sResult = 0
 EndFunc   ;==>IsGitInstalled
 
 Func IsNodeInstalled()
-	Local $sResult = RunWait(@ComSpec & " /c node --version", "", @SW_HIDE)
+	Local $sResult = RunWait(@ComSpec & " /c node --version", "", @SW_HIDE, $STDOUT_CHILD)
 	Return $sResult = 0
 EndFunc   ;==>IsNodeInstalled
 
 Func IsPythonInstalled()
-	Local $sResult = RunWait(@ComSpec & " /c python --version", "", @SW_HIDE)
+	Local $sResult = RunWait(@ComSpec & " /c python --version", "", @SW_HIDE, $STDOUT_CHILD)
 	Return $sResult = 0
 EndFunc   ;==>IsPythonInstalled
 
@@ -431,7 +440,7 @@ Func InstallSelectedItems()
 	EndIf
 
 	If $bRestart = True Then
-		MsgBox(0,"Restart Launcher", "FLUJO Launcher will re-start after Installation of Git, Node or Python")
+		MsgBox(0, "Restart Launcher", "FLUJO Launcher will re-start after Installation of Git, Node or Python")
 		If Not @Compiled Then ShellExecute(@AutoItExe, @ScriptFullPath)
 		If @Compiled Then ShellExecute(@AutoItExe)
 		Exit
