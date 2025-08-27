@@ -1,10 +1,9 @@
+#Region ;**** Directives created by AutoIt3Wrapper_GUI ****
+#AutoIt3Wrapper_Icon=..\FLUJO\public\favicon.ico
+#EndRegion ;**** Directives created by AutoIt3Wrapper_GUI ****
 ; *** Start added by AutoIt3Wrapper ***
 #include <AutoItConstants.au3>
 ; *** End added by AutoIt3Wrapper ***
-#Region ;**** Directives created by AutoIt3Wrapper_GUI ****
-#AutoIt3Wrapper_Icon=public\favicon.ico
-#AutoIt3Wrapper_Add_Constants=n
-#EndRegion ;**** Directives created by AutoIt3Wrapper_GUI ****
 ; ===============================================
 ; FLUJO Launcher - Interactive Version
 ; Launcher for FLUJO Next.js application with selective installation
@@ -25,7 +24,7 @@
 ; CONFIGURATION SECTION
 ; ===============================================
 Global $FLUJO_REPO = "https://github.com/mario-andreschak/FLUJO.git"
-Global $INSTALL_DIR = @ScriptDir ; Will be updated from INI file
+Global $INSTALL_DIR = @ScriptDir & "\FLUJO\" ; Will be updated from INI file
 Global $TEMP_DIR = @TempDir & "\FLUJO-Launcher"
 Global $LOG_FILE = $TEMP_DIR & "\launcher.log"
 Global $INI_FILE = @ScriptDir & "\FLUJO-Launcher.ini"
@@ -399,6 +398,7 @@ Func InstallSelectedItems()
 	EndIf
 
 	Local $iCurrentStep = 0
+	Local $bRestart = False
 
 	; Install Git
 	If GUICtrlRead($hChkGit) = $GUI_CHECKED Then
@@ -406,6 +406,7 @@ Func InstallSelectedItems()
 		UpdateStatus("Installing Git... (" & $iCurrentStep & "/" & $iTotalSteps & ")", ($iCurrentStep / $iTotalSteps) * 100)
 		If InstallGit() Then
 			GUICtrlSetState($hChkGit, $GUI_UNCHECKED)
+			$bRestart = True
 		EndIf
 	EndIf
 
@@ -415,6 +416,7 @@ Func InstallSelectedItems()
 		UpdateStatus("Installing Node.js... (" & $iCurrentStep & "/" & $iTotalSteps & ")", ($iCurrentStep / $iTotalSteps) * 100)
 		If InstallNodeJS() Then
 			GUICtrlSetState($hChkNode, $GUI_UNCHECKED)
+			$bRestart = True
 		EndIf
 	EndIf
 
@@ -424,7 +426,15 @@ Func InstallSelectedItems()
 		UpdateStatus("Installing Python... (" & $iCurrentStep & "/" & $iTotalSteps & ")", ($iCurrentStep / $iTotalSteps) * 100)
 		If InstallPython() Then
 			GUICtrlSetState($hChkPython, $GUI_UNCHECKED)
+			$bRestart = True
 		EndIf
+	EndIf
+
+	If $bRestart = True Then
+		MsgBox(0,"Restart Launcher", "FLUJO Launcher will re-start after Installation of Git, Node or Python")
+		If Not @Compiled Then ShellExecute(@AutoItExe, @ScriptFullPath)
+		If @Compiled Then ShellExecute(@AutoItExe)
+		Exit
 	EndIf
 
 	; Clone/Update FLUJO
@@ -490,7 +500,7 @@ Func InstallNodeJS()
 
 	WriteLog("Installing Node.js using winget")
 
-	Local $sCmd = "winget install --id OpenJS.NodeJS -e --source winget --accept-package-agreements --accept-source-agreements"
+	Local $sCmd = "winget install -e --id OpenJS.NodeJS"
 	Local $iPID = Run(@ComSpec & " /c " & $sCmd, "", @SW_SHOW)
 
 	While ProcessExists($iPID)
